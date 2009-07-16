@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<project name="test" default="test-target" basedir=".">
+	<description>builds foo with bar</description>
+	<import file="imported.xml"/>
+	<property name="foo" value="bar"/>
+	<property name="inevergetcalled" value="doesn't matter"/>
+	<property name="igetcalled" value="I do get called"/>
+	<target name="test-target">
+		<echo message="${foo}" />
+		<echo message="${igetcalled}"/>
+		<echo message="${iamnotdeclared}"/>
+		<property name="bar" value="baz" />
+	</target>
+</project>

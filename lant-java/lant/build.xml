@@ -1,0 +1,58 @@
+<project default="unit_test" basedir=".">
+
+	<property name="classes" location="${basedir}/classes" />
+	<property name="lib" location="${basedir}/lib" />
+	<property name="src" location="${basedir}/src" />
+	<property name="test.results" location="${basedir}/testresults" />
+	<property name="bogus_name" value="testing" />
+
+	<mkdir dir="${classes}" />
+
+	<path id="jars">
+		<fileset dir="${lib}" />
+	</path>
+
+	<target name="clean">
+		<delete failonerror="false">
+			<fileset dir="${classes}" />
+			<fileset dir="${test.results}" />
+			<fileset file="${lib}/lant.jar" />
+		</delete>
+
+	</target>
+	<target name="jar" depends="compile">
+		<jar destfile="${lib}/lant.jar" basedir="${classes}" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<javac srcdir="${src}" destdir="${classes}" classpathref="jars" debug="on" />
+	</target>
+
+	<target name="unit_test" depends="jar">
+		<mkdir dir="${test.results}" />
+		
+		<junit haltonerror="true " haltonfailure="true" printsummary="yes">
+			<classpath>
+				<fileset dir="${lib}" />
+			</classpath>
+			
+			<formatter type="plain" usefile="true"/>
+			
+			<batchtest fork="true" todir="${test.results}">
+				<fileset dir="${src}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="test" depends="jar">
+		<taskdef name="lant" classname="org.juliansimpson.lant.LantTask">
+			<classpath>
+				<path refid="jars" />
+			</classpath>
+		</taskdef>
+		<lant />
+	</target>
+
+</project>
